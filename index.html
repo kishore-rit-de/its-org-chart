@@ -1,0 +1,1194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px 'Helvetica Neue'}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px '.AppleSystemUIFontMonospaced'; color: #262626; background-color: #f2f2f2}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px '.AppleSystemUIFontMonospaced'; color: #262626; background-color: #f2f2f2; min-height: 17.0px}
+    span.s1 {font: 14.0px '.AppleSystemUIFontMonospaced'}
+  </style>
+</head>
+<body>
+<p class="p1">Here is a refactored, single-file version of your HTML hierarchy.</p>
+<p class="p2"><br></p>
+<p class="p1">To give you that <b>"prettier, top-to-bottom horizontal tree flow,"</b> I stripped out the native, vertical <span class="s1">&lt;details&gt;</span>/<span class="s1">&lt;summary&gt;</span> markup and replaced it with a modern CSS Grid/Flexbox architecture. It creates a sleek, clean organizational chart that flows down from the root (Joan Graham) to her direct reports, and down into their teams.</p>
+<p class="p2"><br></p>
+<p class="p1">I also kept your original vanilla JavaScript search, expand, collapse, and print functionality intact—just adapted to work perfectly with the new visual layout.</p>
+<p class="p2"><br></p>
+<p class="p1">You can save the code below as an <span class="s1">.html</span> file (e.g., <span class="s1">its_org_chart.html</span>) and open it in any browser:</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3">&lt;!doctype html&gt;</p>
+<p class="p3">&lt;html lang="en"&gt;</p>
+<p class="p3">&lt;head&gt;</p>
+<p class="p3">&lt;meta charset="utf-8"&gt;</p>
+<p class="p3">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
+<p class="p3">&lt;title&gt;ITS Organization July 2026 - Visual Org Chart&lt;/title&gt;</p>
+<p class="p3">&lt;style&gt;</p>
+<p class="p3">:root {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--bg: #f8fafc;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--panel: #ffffff;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--ink: #0f172a;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--muted: #64748b;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--line: #cbd5e1;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--accent: #2563eb;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--accent-soft: #eff6ff;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--green-soft: #f0fdf4;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--green: #16a34a;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>--radius: 12px;</p>
+<p class="p3">}</p>
+<p class="p3">* { box-sizing: border-box; }</p>
+<p class="p3">body {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin: 0;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: var(--bg);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>color: var(--ink);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>line-height: 1.4;</p>
+<p class="p3">}</p>
+<p class="p3">.header {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>max-width: 1400px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin: 0 auto;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 24px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>text-align: center;</p>
+<p class="p3">}</p>
+<p class="p3">h1 {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin: 0 0 8px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-size: clamp(24px, 2.5vw, 36px);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>letter-spacing: -0.02em;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-weight: 800;</p>
+<p class="p3">}</p>
+<p class="p3">.subtitle {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>color: var(--muted);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin: 0;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-size: 14px;</p>
+<p class="p3">}</p>
+<p class="p3">.shell {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>max-width: 100vw;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 0 24px 48px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>flex-direction: column;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>align-items: center;</p>
+<p class="p3">}</p>
+<p class="p3">.toolbar {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>position: sticky;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>top: 12px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>z-index: 100;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>align-items: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>gap: 10px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: rgba(255, 255, 255, 0.85);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>backdrop-filter: blur(12px);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border: 1px solid var(--line);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: var(--radius);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 10px 16px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>box-shadow: var(--shadow);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin-bottom: 32px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>max-width: 900px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>width: 100%;</p>
+<p class="p3">}</p>
+<p class="p3">button, input[type="search"] {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font: inherit;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: 8px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border: 1px solid var(--line);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-size: 14px;</p>
+<p class="p3">}</p>
+<p class="p3">button {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: var(--panel);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>color: var(--ink);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 8px 14px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>cursor: pointer;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-weight: 500;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>transition: all 0.2s ease;</p>
+<p class="p3">}</p>
+<p class="p3">button:hover {<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-color: var(--accent);<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>color: var(--accent);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: var(--accent-soft);</p>
+<p class="p3">}</p>
+<p class="p3">input[type="search"] {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>flex: 1;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 8px 12px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: var(--panel);</p>
+<p class="p3">}</p>
+<p class="p3">.status {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>color: var(--muted);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-size: 13px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-weight: 500;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding-left: 8px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-left: 1px solid var(--line);</p>
+<p class="p3">}</p>
+<p class="p3">.summary-row {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>gap: 16px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin-bottom: 32px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>justify-content: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>width: 100%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>max-width: 900px;</p>
+<p class="p3">}</p>
+<p class="p3">.stat {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: var(--panel);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border: 1px solid #e2e8f0;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: var(--radius);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 12px 20px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>box-shadow: var(--shadow);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>flex: 1;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>text-align: center;</p>
+<p class="p3">}</p>
+<p class="p3">.stat strong { display: block; font-size: 22px; color: var(--accent); }</p>
+<p class="p3">.stat span { color: var(--muted); font-size: 12px; font-weight: 500; }</p>
+<p class="p4"><br></p>
+<p class="p3">/* --- HORIZONTAL TREE LAYOUT --- */</p>
+<p class="p3">.chart-container {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>width: 100%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>overflow-x: auto;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 20px 0;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>justify-content: center;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: block;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>white-space: nowrap;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>text-align: center;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper ul {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding-top: 24px;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>position: relative;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>transition: all 0.5s;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>justify-content: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin: 0;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding-left: 0;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper li {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>float: none;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: inline-block;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>text-align: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>list-style-type: none;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>position: relative;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 24px 8px 0 8px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>transition: all 0.5s;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>vertical-align: top;</p>
+<p class="p3">}</p>
+<p class="p4"><br></p>
+<p class="p3">/* Connecting Lines */</p>
+<p class="p3">.tree-wrapper li::before, .tree-wrapper li::after {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>content: '';</p>
+<p class="p3"><span class="Apple-converted-space">    </span>position: absolute;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>top: 0;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>right: 50%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-top: 2px solid var(--line);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>width: 50%;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>height: 24px;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper li::after {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>right: auto;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>left: 50%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-left: 2px solid var(--line);</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper li:only-child::after, .tree-wrapper li:only-child::before {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: none;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper li:only-child {<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding-top: 0;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper li:first-child::before, .tree-wrapper li:last-child::after {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border: 0 none;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper li:last-child::before {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-right: 2px solid var(--line);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: 0 5px 0 0;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper li:first-child::after {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: 5px 0 0 0;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-wrapper ul ul::before {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>content: '';</p>
+<p class="p3"><span class="Apple-converted-space">    </span>position: absolute;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>top: 0;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>left: 50%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-left: 2px solid var(--line);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>width: 0;<span class="Apple-converted-space"> </span></p>
+<p class="p3"><span class="Apple-converted-space">    </span>height: 24px;</p>
+<p class="p3">}</p>
+<p class="p4"><br></p>
+<p class="p3">/* --- CARDS &amp; NODES --- */</p>
+<p class="p3">.node-card {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: inline-flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>flex-direction: column;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>align-items: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>gap: 6px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>min-width: 220px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>max-width: 260px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 12px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border: 1px solid #e2e8f0;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: 10px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: #fff;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>box-shadow: var(--shadow);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>position: relative;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>white-space: normal;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>text-align: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>transition: all 0.2s ease;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>cursor: pointer;</p>
+<p class="p3">}</p>
+<p class="p3">.node-card:hover {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>transform: translateY(-2px);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-color: var(--accent);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>box-shadow: 0 12px 20px -5px rgba(37, 99, 235, 0.15);</p>
+<p class="p3">}</p>
+<p class="p3">.name { font-weight: 700; font-size: 14px; color: var(--ink); }</p>
+<p class="p3">.role { color: var(--muted); font-size: 12px; margin-top: 2px; font-weight: 400; }</p>
+<p class="p3">.meta {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>flex-direction: column;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>gap: 4px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>width: 100%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>margin-top: 4px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>align-items: center;</p>
+<p class="p3">}</p>
+<p class="p3">.badge, .counts {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: inline-block;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: 4px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>padding: 2px 6px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-size: 10px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-weight: 600;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>text-transform: uppercase;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>letter-spacing: 0.02em;</p>
+<p class="p3">}</p>
+<p class="p3">.badge.tag { background: var(--accent-soft); color: var(--accent); }</p>
+<p class="p3">.badge.unit { background: #f1f5f9; color: #475569; font-weight: 500; }</p>
+<p class="p3">.counts { background: var(--green-soft); color: var(--green); }</p>
+<p class="p4"><br></p>
+<p class="p3">/* Hierarchy Level Styling Modifications */</p>
+<p class="p3">.level-0 { border-top: 4px solid #1e3a8a; background: #fafafa; }</p>
+<p class="p3">.level-1 { border-top: 4px solid #2563eb; }</p>
+<p class="p3">.level-2 { border-top: 4px solid #06b6d4; }</p>
+<p class="p3">.level-3 { border-top: 4px solid #64748b; }</p>
+<p class="p4"><br></p>
+<p class="p3">/* Toggle Button for collapsing branches */</p>
+<p class="p3">.toggle-btn {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>position: absolute;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>bottom: -10px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>left: 50%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>transform: translateX(-50%);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>width: 20px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>height: 20px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: var(--panel);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border: 2px solid var(--line);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-radius: 50%;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>align-items: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>justify-content: center;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-size: 12px;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>font-weight: bold;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>cursor: pointer;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>color: var(--muted);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>z-index: 2;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>box-shadow: 0 2px 4px rgba(0,0,0,0.05);</p>
+<p class="p3">}</p>
+<p class="p3">.toggle-btn:hover {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>border-color: var(--accent);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>color: var(--accent);</p>
+<p class="p3">}</p>
+<p class="p4"><br></p>
+<p class="p3">/* Structural States (Collapsed / Hidden) */</p>
+<p class="p3">.collapsed-branch &gt; ul {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>display: none !important;</p>
+<p class="p3">}</p>
+<p class="p3">.tree-node.hidden { display: none !important; }</p>
+<p class="p3">.tree-node.search-hit &gt; .node-card {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>outline: 3px solid #f59e0b;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>background: #fffbeb;</p>
+<p class="p3">}</p>
+<p class="p4"><br></p>
+<p class="p3">@media print {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>body { background: white; }</p>
+<p class="p3"><span class="Apple-converted-space">    </span>.toolbar { display: none; }</p>
+<p class="p3"><span class="Apple-converted-space">    </span>.node-card { box-shadow: none; border: 1px solid #000; }</p>
+<p class="p3">}</p>
+<p class="p3">&lt;/style&gt;</p>
+<p class="p3">&lt;/head&gt;</p>
+<p class="p3">&lt;body&gt;</p>
+<p class="p3">&lt;header class="header"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;h1&gt;ITS Organization - Expandable Hierarchy&lt;/h1&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;p class="subtitle"&gt;July 2026 organization view. Dynamic chart flowing from top to bottom. Click the tracking indicator nodes below cards to collapse/expand teams.&lt;/p&gt;</p>
+<p class="p3">&lt;/header&gt;</p>
+<p class="p3">&lt;main class="shell"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;section class="toolbar" aria-label="Hierarchy controls"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;input id="searchBox" type="search" placeholder="Search a name, title, or team..." aria-label="Search hierarchy"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;button type="button" id="expandAll"&gt;Expand all&lt;/button&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;button type="button" id="collapseAll"&gt;Direct reports only&lt;/button&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;button type="button" id="clearSearch"&gt;Clear search&lt;/button&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;button type="button" onclick="window.print()"&gt;Print Chart&lt;/button&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span id="status" class="status"&gt;Ready&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;section class="summary-row" aria-label="Hierarchy summary"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="stat"&gt;&lt;strong&gt;165&lt;/strong&gt;&lt;span&gt;Total Nodes&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="stat"&gt;&lt;strong&gt;4&lt;/strong&gt;&lt;span&gt;Direct Reports&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="stat"&gt;&lt;strong&gt;164&lt;/strong&gt;&lt;span&gt;Total Downline staff&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;section class="chart-container"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="tree-wrapper"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;ul class="tree" role="tree"&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="0" data-text="joan graham associate vice president and chief information officer office of the cio vp / cio"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-0"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Joan Graham&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Associate Vice President and Chief Information Officer&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge tag"&gt;VP / CIO&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Office of the CIO&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;4 directs · 164 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="1" data-text="geremy gersh associate cio and chief technology officer enterprise it direct report"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-1"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Geremy Gersh&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Associate CIO and Chief Technology Officer&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge tag"&gt;Direct Report&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Enterprise IT&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;5 directs · 127 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="director, applications development vacant applications development "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Director, Applications Development&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Vacant&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Applications Development&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;4 directs · 35 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="kim maimone manager, enterprise business applications<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Kim Maimone&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Enterprise Business Applications&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;7 directs · 7 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="adriana capobianco <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Adriana Capobianco&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="lubomir culak <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Lubomir Culak&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="eric engert <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Eric Engert&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="scott mitchell <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Scott Mitchell&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="tim trostle <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Tim Trostle&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="wei wang <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Wei Wang&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="eric williams <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Eric Williams&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="rick myles manager, enterprise web applications<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Rick Myles&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Enterprise Web Applications&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;10 directs · 10 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="bill breindel <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Bill Breindel&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="mikel brown <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Mikel Brown&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="leslie chang <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Leslie Chang&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="david drushler <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;David Drushler&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="christopher dumlao <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Christopher Dumlao&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="ian effendi <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Ian Effendi&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="kai ho <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Kai Ho&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="jim matasovsky <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Jim Matasovsky&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="jason pitoniak <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Jason Pitoniak&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="alex twomey <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Alex Twomey&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="marla roberts manager, enterprise student applications<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Marla Roberts&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Enterprise Student Applications&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;10 directs · 10 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="ed buffan <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Ed Buffan&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="laura giguere <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Laura Giguere&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="mark haldeman <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Mark Haldeman&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="ziad khairallah <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Ziad Khairallah&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="zachary lightcap <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Zachary Lightcap&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="nikhil manpathak <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Nikhil Manpathak&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="ashlin tabiadon <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Ashlin Tabiadon&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="alexei tetenov <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Alexei Tetenov&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="sai valavala <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Sai Valavala&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="ning zhang <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Ning Zhang&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="evan seary manager, application administration<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Evan Seary&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Application Administration&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;4 directs · 4 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="david cole <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;David Cole&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="derek ridings <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Derek Ridings&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="eric thompson <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Eric Thompson&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="scotty williams <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Scotty Williams&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="matt campbell<span class="Apple-converted-space">  </span>enterprise architecture "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Matt Campbell&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="badge unit"&gt;Enterprise Architecture&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="kelly mclaughlin director, support &amp;amp; service enterprise support "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Kelly McLaughlin&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Director, Support &amp;amp; Service&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Enterprise Support&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;3 directs · 32 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="rick barnard manager, endpoint support<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Rick Barnard&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Endpoint Support&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;8 directs · 11 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="ryan brown <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Ryan Brown&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="omar chin <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Omar Chin&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="miggy galan <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Miggy Galan&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="zack green <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Zack Green&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="charles hall <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Charles Hall&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="vince incardona <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Vince Incardona&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="logan thompson <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Logan Thompson&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="4" data-text="ethan wingenbach supervisor<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Ethan Wingenbach&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Supervisor&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;3 directs · 3 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="alan blumenstock <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Alan Blumenstock&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="shaair codner <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Shaair Codner&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="john mander <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;John Mander&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="ron herreid <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Ron Herreid&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="kathy marcus manager, service center<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Kathy Marcus&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Service Center&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;5 directs · 18 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="parker barnaby <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Parker Barnaby&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="4" data-text="scema brown supervisor<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Scema Brown&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Supervisor&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;6 directs · 6 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="christina cavuoto <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Christina Cavuoto&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="gloria dupree <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Gloria DuPree&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="justine jackson <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Justine Jackson&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="heather mcdermott <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Heather McDermott&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="brad mcneil <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Brad McNeil&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="julie means <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Julie Means&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="4" data-text="knycos ferguson supervisor<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Knycos Ferguson&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Supervisor&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;7 directs · 7 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="konnor clark <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Konnor Clark&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="jennifer o&amp;#x27;toole <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Jennifer O&amp;#x27;Toole&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="ardelia parker-killings <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Ardelia Parker-Killings&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="tristan rene <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Tristan Rene&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="parker stein <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;Parker Stein&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="m. adam woodward <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;M. Adam Woodward&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="5" data-text="aj wynn <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-5"&gt;&lt;span class="name"&gt;AJ Wynn&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="catrina sapp <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Catrina Sapp&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="evan smith <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Evan Smith&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="shawn plummer director, infrastructure &amp;amp; operations infrastructure and operations "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Shawn Plummer&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Director, Infrastructure &amp;amp; Operations&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Infrastructure and Operations&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;5 directs · 42 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="brendan foley manager, systems platform engineering<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Brendan Foley&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Systems Platform Engineering&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;10 directs · 10 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="mark bruno <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Mark Bruno&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="chris butler <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Chris Butler&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="james lindsay <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;James Lindsay&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="eric meddaugh <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Eric Meddaugh&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="john petro <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;John Petro&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="allen sabernick <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Allen Sabernick&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="pete shumov <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Pete Shumov&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="mike toczek <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Mike Toczek&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="logan walsh <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Logan Walsh&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="eric warner <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Eric Warner&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="greg gardner manager, identity &amp;amp; access management<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Greg Gardner&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Identity &amp;amp; Access Management&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;7 directs · 7 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="lars avery <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Lars Avery&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="kevin carpenter <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Kevin Carpenter&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="clay cooper <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Clay Cooper&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="john haley <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;John Haley&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="maddie herbert <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Maddie Herbert&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="harman kailey <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Harman Kailey&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="dave lafferty <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Dave Lafferty&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="arthur miller manager, network engineering<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Arthur Miller&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Network Engineering&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;8 directs · 8 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="robert heine <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Robert Heine&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="tony lam <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Tony Lam&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="alex polge <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Alex Polge&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="kevin schoenfeld <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Kevin Schoenfeld&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="jim shanks <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Jim Shanks&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="valerie slujalkovsky torchio <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Valerie Slujalkovsky Torchio&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="ron soriano <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Ron Soriano&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="josh winterkorn <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Josh Winterkorn&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="omar phillips manager, client platform engineering<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Omar Phillips&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Client Platform Engineering&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;6 directs · 6 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="arthur fox <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Arthur Fox&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="brian galliford <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Brian Galliford&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="paul magnani <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Paul Magnani&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="christopher nardi <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Christopher Nardi&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="garrett nunley <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Garrett Nunley&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="joanna prescott <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Joanna Prescott&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="3" data-text="emmy thatvihane flores manager, digital workspace &amp;amp; collaboration<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Emmy Thatvihane Flores&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Digital Workspace &amp;amp; Collaboration&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;6 directs · 6 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="mike bruckner <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Mike Bruckner&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="mark golemb <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Mark Golemb&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="will hart <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Will Hart&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="len levaskevich <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Len Levaskevich&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="steve petry <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Steve Petry&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="4" data-text="mike young <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-4"&gt;&lt;span class="name"&gt;Mike Young&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="rona skinner director project and program management office "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Rona Skinner&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Director&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Project and Program Management Office&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;13 directs · 13 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="teresa biehler <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Teresa Biehler&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="roe greyson <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Roe Greyson&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="jaime grimes <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Jaime Grimes&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="stephanie haynes <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Stephanie Haynes&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="andrew hiltz <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Andrew Hiltz&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="michelle mullen <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Michelle Mullen&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="catlin nairn <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Catlin Nairn&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="jeannette plymale <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Jeannette Plymale&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="heather potter <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Heather Potter&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="michelle poysa <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Michelle Poysa&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="mary jane schwan <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Mary Jane Schwan&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="christine snell <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Christine Snell&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="michelle teal <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Michelle Teal&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="1" data-text="nilay sapio executive director, enterprise data &amp;amp; analytics enterprise data &amp;amp; analytics direct report"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-1"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Nilay Sapio&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Executive Director, Enterprise Data &amp;amp; Analytics&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge tag"&gt;Direct Report&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Enterprise Data &amp;amp; Analytics&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;3 directs · 20 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="beth bailor principal data architect data architecture and data governance "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Beth Bailor&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Principal Data Architect&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Data Architecture and Data Governance&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;1 direct · 1 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="beth prince-bradbury <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Beth Prince-Bradbury&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="anthony musa manager, data engineering enterprise data management "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Anthony Musa&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Data Engineering&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Enterprise Data Management&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;11 directs · 11 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="charles barber <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Charles Barber&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="james brien <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;James Brien&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="scott canaan <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Scott Canaan&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="patrick casey <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Patrick Casey&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="xiuli gong <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Xiuli Gong&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="rachael jones <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Rachael Jones&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="jane kim <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Jane Kim&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="mark lu <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Mark Lu&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="ileana stein <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Ileana Stein&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="adam tang <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Adam Tang&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="kishore thummaluru <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Kishore Thummaluru&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="josh butler manager, reporting and analytics reporting and analytics "&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Josh Butler&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Reporting and Analytics&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Reporting and Analytics&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;5 directs · 5 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="sara irizarry <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Sara Irizarry&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="dharmik rajesh joshi <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Dharmik Rajesh Joshi&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="rob rolleston <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Rob Rolleston&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="zeinab salarifar <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Zeinab Salarifar&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="sri charitha velamuri <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Sri Charitha Velamuri&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="1" data-text="aldwin maloto chief information security officer information security direct report"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-1"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Aldwin Maloto&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Chief Information Security Officer&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge tag"&gt;Direct Report&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Information Security&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;5 directs · 6 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="steve mihm <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Steve Mihm&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="stephen montanaro <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Stephen Montanaro&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="jim moore <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Jim Moore&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="mike turkowski <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Mike Turkowski&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="2" data-text="ben woelk manager, governance, awareness &amp;amp; training<span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Ben Woelk&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Manager, Governance, Awareness &amp;amp; Training&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;&lt;span class="counts"&gt;1 direct · 1 total&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="3" data-text="tina oware <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-3"&gt;&lt;span class="name"&gt;Tina Oware&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node has-children" data-level="1" data-text="matangi buch executive director, research computing research computing direct report"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-1"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="name"&gt;Matangi Buch&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;span class="role"&gt;Executive Director, Research Computing&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="meta"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge tag"&gt;Direct Report&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="badge unit"&gt;Research Computing&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;span class="counts"&gt;7 directs · 7 total&lt;/span&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;div class="toggle-btn"&gt;−&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;ul&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="emilio del plato <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Emilio Del Plato&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="andy elble <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Andy Elble&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="doug heckman <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Doug Heckman&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="jen herting <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Jen Herting&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="ben meyers <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Ben Meyers&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="paul mezzanini <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Paul Mezzanini&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3">&lt;li class="tree-node leaf" data-level="2" data-text="sid pendelberry <span class="Apple-converted-space">  </span>"&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;div class="node-card level-2"&gt;&lt;span class="name"&gt;Sid Pendelberry&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/ul&gt;</p>
+<p class="p3">&lt;/li&gt;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>&lt;/ul&gt;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p3"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p3">&lt;/main&gt;</p>
+<p class="p3">&lt;script&gt;</p>
+<p class="p3">(function() {</p>
+<p class="p3"><span class="Apple-converted-space">    </span>const allNodes = Array.from(document.querySelectorAll('.tree-node'));</p>
+<p class="p3"><span class="Apple-converted-space">    </span>const searchBox = document.getElementById('searchBox');</p>
+<p class="p3"><span class="Apple-converted-space">    </span>const status = document.getElementById('status');</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>function setStatus(text) { status.textContent = text; }</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>function revealAllNodes() {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>allNodes.forEach(node =&gt; {</p>
+<p class="p3"><span class="Apple-converted-space">            </span>node.classList.remove('hidden', 'search-hit', 'collapsed-branch');</p>
+<p class="p3"><span class="Apple-converted-space">            </span>const btn = node.querySelector(':scope &gt; .node-card &gt; .toggle-btn');</p>
+<p class="p3"><span class="Apple-converted-space">            </span>if(btn) btn.textContent = '−';</p>
+<p class="p3"><span class="Apple-converted-space">        </span>});</p>
+<p class="p3"><span class="Apple-converted-space">    </span>}</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>function expandAll() {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>revealAllNodes();</p>
+<p class="p3"><span class="Apple-converted-space">        </span>setStatus('Expanded all branches');</p>
+<p class="p3"><span class="Apple-converted-space">    </span>}</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>function directReportsOnly() {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>searchBox.value = '';</p>
+<p class="p3"><span class="Apple-converted-space">        </span>revealAllNodes();</p>
+<p class="p3"><span class="Apple-converted-space">        </span>allNodes.forEach(node =&gt; {</p>
+<p class="p3"><span class="Apple-converted-space">            </span>const level = parseInt(node.dataset.level || '0');</p>
+<p class="p3"><span class="Apple-converted-space">            </span>if (level === 1) {</p>
+<p class="p3"><span class="Apple-converted-space">                </span>node.classList.add('collapsed-branch');</p>
+<p class="p3"><span class="Apple-converted-space">                </span>const btn = node.querySelector(':scope &gt; .node-card &gt; .toggle-btn');</p>
+<p class="p3"><span class="Apple-converted-space">                </span>if(btn) btn.textContent = '+';</p>
+<p class="p3"><span class="Apple-converted-space">            </span>}</p>
+<p class="p3"><span class="Apple-converted-space">        </span>});</p>
+<p class="p3"><span class="Apple-converted-space">        </span>setStatus('Showing VP/CIO and direct reports');</p>
+<p class="p3"><span class="Apple-converted-space">    </span>}</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>function clearSearch() {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>searchBox.value = '';</p>
+<p class="p3"><span class="Apple-converted-space">        </span>revealAllNodes();</p>
+<p class="p3"><span class="Apple-converted-space">        </span>setStatus('Search cleared');</p>
+<p class="p3"><span class="Apple-converted-space">    </span>}</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>function runSearch() {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>const query = searchBox.value.trim().toLowerCase();</p>
+<p class="p3"><span class="Apple-converted-space">        </span>allNodes.forEach(node =&gt; node.classList.remove('search-hit', 'hidden', 'collapsed-branch'));</p>
+<p class="p4"><span class="Apple-converted-space">        </span></p>
+<p class="p3"><span class="Apple-converted-space">        </span>if (!query) {</p>
+<p class="p3"><span class="Apple-converted-space">            </span>setStatus('Ready');</p>
+<p class="p3"><span class="Apple-converted-space">            </span>return;</p>
+<p class="p3"><span class="Apple-converted-space">        </span>}</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">        </span>const matching = [];</p>
+<p class="p3"><span class="Apple-converted-space">        </span>allNodes.forEach(node =&gt; {</p>
+<p class="p3"><span class="Apple-converted-space">            </span>const ownText = (node.dataset.text || '').toLowerCase();</p>
+<p class="p3"><span class="Apple-converted-space">            </span>if (ownText.includes(query)) {</p>
+<p class="p3"><span class="Apple-converted-space">                </span>matching.push(node);</p>
+<p class="p3"><span class="Apple-converted-space">                </span>node.classList.add('search-hit');</p>
+<p class="p3"><span class="Apple-converted-space">            </span>}</p>
+<p class="p3"><span class="Apple-converted-space">        </span>});</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">        </span>allNodes.forEach(node =&gt; node.classList.add('hidden'));</p>
+<p class="p3"><span class="Apple-converted-space">        </span>matching.forEach(node =&gt; {</p>
+<p class="p3"><span class="Apple-converted-space">            </span>node.classList.remove('hidden');</p>
+<p class="p3"><span class="Apple-converted-space">            </span>let current = node.parentElement;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>while (current) {</p>
+<p class="p3"><span class="Apple-converted-space">                </span>if (current.closest('.tree-node')) {</p>
+<p class="p3"><span class="Apple-converted-space">                    </span>const parentNode = current.closest('.tree-node');</p>
+<p class="p3"><span class="Apple-converted-space">                    </span>parentNode.classList.remove('hidden', 'collapsed-branch');</p>
+<p class="p3"><span class="Apple-converted-space">                    </span>const btn = parentNode.querySelector(':scope &gt; .node-card &gt; .toggle-btn');</p>
+<p class="p3"><span class="Apple-converted-space">                    </span>if(btn) btn.textContent = '−';</p>
+<p class="p3"><span class="Apple-converted-space">                </span>}</p>
+<p class="p3"><span class="Apple-converted-space">                </span>current = current.parentElement;</p>
+<p class="p3"><span class="Apple-converted-space">            </span>}</p>
+<p class="p3"><span class="Apple-converted-space">        </span>});</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">        </span>setStatus(matching.length === 1 ? '1 match' : matching.length + ' matches');</p>
+<p class="p3"><span class="Apple-converted-space">    </span>}</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>// Toggle branches on node click or indicator click</p>
+<p class="p3"><span class="Apple-converted-space">    </span>document.querySelector('.tree').addEventListener('click', function(e) {</p>
+<p class="p3"><span class="Apple-converted-space">        </span>const toggleBtn = e.target.closest('.toggle-btn');</p>
+<p class="p3"><span class="Apple-converted-space">        </span>const card = e.target.closest('.node-card');</p>
+<p class="p4"><span class="Apple-converted-space">        </span></p>
+<p class="p3"><span class="Apple-converted-space">        </span>if (toggleBtn || card) {</p>
+<p class="p3"><span class="Apple-converted-space">            </span>const node = (toggleBtn || card).closest('.tree-node');</p>
+<p class="p3"><span class="Apple-converted-space">            </span>if (node &amp;&amp; node.classList.contains('has-children')) {</p>
+<p class="p3"><span class="Apple-converted-space">                </span>node.classList.toggle('collapsed-branch');</p>
+<p class="p3"><span class="Apple-converted-space">                </span>const btn = node.querySelector(':scope &gt; .node-card &gt; .toggle-btn');</p>
+<p class="p3"><span class="Apple-converted-space">                </span>if(btn) {</p>
+<p class="p3"><span class="Apple-converted-space">                    </span>btn.textContent = node.classList.contains('collapsed-branch') ? '+' : '−';</p>
+<p class="p3"><span class="Apple-converted-space">                </span>}</p>
+<p class="p3"><span class="Apple-converted-space">            </span>}</p>
+<p class="p3"><span class="Apple-converted-space">        </span>}</p>
+<p class="p3"><span class="Apple-converted-space">    </span>});</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>document.getElementById('expandAll').addEventListener('click', expandAll);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>document.getElementById('collapseAll').addEventListener('click', directReportsOnly);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>document.getElementById('clearSearch').addEventListener('click', clearSearch);</p>
+<p class="p3"><span class="Apple-converted-space">    </span>searchBox.addEventListener('input', runSearch);</p>
+<p class="p4"><br></p>
+<p class="p3"><span class="Apple-converted-space">    </span>// Initial view initialization</p>
+<p class="p3"><span class="Apple-converted-space">    </span>directReportsOnly();</p>
+<p class="p3">})();</p>
+<p class="p3">&lt;/script&gt;</p>
+<p class="p3">&lt;/body&gt;</p>
+<p class="p3">&lt;/html&gt;</p>
+<p class="p2"><br></p>
+</body>
+</html>
